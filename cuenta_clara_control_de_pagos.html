@@ -1,0 +1,1149 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#123f35">
+  <title>Cuenta Clara | Control de pagos</title>
+  
+  <!-- External Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #152a25;
+      --muted: #687771;
+      --line: #dce5df;
+      --paper: #f3f6f2;
+      --white: #ffffff;
+      --forest: #123f35;
+      --forest-dark: #0b3028;
+      --lime: #d5f36a;
+      --lime-dark: #b6d849;
+      --coral: #e98263;
+      --soft-green: #e9f1e8;
+      --shadow: 0 18px 50px rgba(21, 42, 37, 0.08);
+      --shadow-lg: 0 24px 60px rgba(21, 42, 37, 0.15);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      min-width: 320px;
+      min-height: 100vh;
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(ellipse at 12% 8%, rgba(213, 243, 106, 0.25), transparent 30rem),
+        radial-gradient(ellipse at 88% 92%, rgba(18, 63, 53, 0.05), transparent 30rem),
+        var(--paper);
+      font-family: "DM Sans", -apple-system, BlinkMacSystemFont, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    button, input, select, textarea { font: inherit; }
+    button { cursor: pointer; }
+
+    .shell {
+      width: min(1120px, calc(100% - 48px));
+      margin: 0 auto;
+      padding: 30px 0 56px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      padding-bottom: 34px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 11px;
+      color: var(--forest-dark);
+      font-family: "Space Grotesk", sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .brand-mark {
+      display: grid;
+      width: 36px;
+      height: 36px;
+      place-items: center;
+      border-radius: 11px;
+      color: var(--forest-dark);
+      background: var(--lime);
+      font-size: 20px;
+      line-height: 1;
+      box-shadow: 0 4px 12px rgba(213, 243, 106, 0.4);
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .local-note {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 500;
+      background: rgba(255, 255, 255, 0.6);
+      padding: 6px 12px;
+      border-radius: 20px;
+      border: 1px solid var(--line);
+    }
+
+    .local-note::before {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #4ade80;
+      box-shadow: 0 0 8px rgba(74, 222, 128, 0.6);
+      content: "";
+    }
+
+    .intro {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 25px;
+    }
+
+    .eyebrow {
+      margin: 0 0 9px;
+      color: #3b6357;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    h1, h2, p { margin-top: 0; }
+
+    h1 {
+      margin-bottom: 8px;
+      font-family: "Space Grotesk", sans-serif;
+      font-size: clamp(28px, 4vw, 38px);
+      line-height: 1.12;
+      letter-spacing: -0.02em;
+    }
+
+    .intro-copy {
+      max-width: 520px;
+      margin-bottom: 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    .workspace {
+      display: grid;
+      grid-template-columns: minmax(290px, 0.88fr) minmax(360px, 1.12fr);
+      align-items: start;
+      gap: 20px;
+    }
+
+    .panel {
+      min-width: 0;
+      overflow: hidden;
+      border: 1px solid rgba(18, 63, 53, 0.09);
+      border-radius: 12px;
+      background: var(--white);
+      box-shadow: var(--shadow);
+      animation: arrive 480ms cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+
+    .panel:nth-child(2) { animation-delay: 90ms; }
+
+    .panel-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 22px 24px 18px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .panel-kicker {
+      margin: 0 0 4px;
+      color: #688075;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    h2 {
+      margin-bottom: 0;
+      font-family: "Space Grotesk", sans-serif;
+      font-size: 21px;
+      line-height: 1.2;
+    }
+
+    .step {
+      display: grid;
+      width: 32px;
+      height: 32px;
+      flex: 0 0 auto;
+      place-items: center;
+      border-radius: 50%;
+      color: var(--forest);
+      background: var(--soft-green);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .form-body { padding: 22px 24px 24px; }
+
+    .field { margin-bottom: 18px; }
+
+    .field label {
+      display: block;
+      margin-bottom: 7px;
+      color: #40564d;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .amount-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 112px;
+      gap: 10px;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      height: 46px;
+      padding: 0 14px;
+      border: 1px solid #cfdad3;
+      border-radius: 8px;
+      outline: none;
+      color: var(--ink);
+      background: #fff;
+      transition: border-color 140ms ease, box-shadow 140ms ease;
+    }
+
+    textarea {
+      height: auto;
+      padding: 10px 14px;
+      resize: vertical;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: #397d66;
+      box-shadow: 0 0 0 3px rgba(57, 125, 102, 0.16);
+    }
+
+    input::placeholder { color: #98a49e; }
+
+    .submit-button {
+      display: flex;
+      width: 100%;
+      min-height: 48px;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 8px;
+      border: 0;
+      border-radius: 8px;
+      color: #f8fff9;
+      background: var(--forest);
+      font-size: 14px;
+      font-weight: 700;
+      transition: background 140ms ease, transform 140ms ease;
+    }
+
+    .submit-button:hover { background: var(--forest-dark); }
+    .submit-button:active { transform: translateY(1px); }
+    
+    .arrow { color: var(--lime); font-size: 18px; line-height: 1; transition: transform 140ms ease; }
+    .submit-button:hover .arrow { transform: translateX(3px); }
+
+    .receiver-panel { background: #fbfdf9; }
+
+    .receiver-panel .step {
+      color: var(--forest-dark);
+      background: var(--lime);
+    }
+
+    .head-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .action-icon-btn {
+      padding: 6px 10px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      color: #586861;
+      background: #ffffff;
+      font-size: 12px;
+      font-weight: 600;
+      transition: all 140ms ease;
+    }
+
+    .action-icon-btn:hover {
+      color: var(--forest);
+      border-color: #a3b8ac;
+      background: #f3f7f4;
+    }
+
+    .clear-button {
+      padding: 6px 10px;
+      border: 1px solid rgba(233, 130, 99, 0.2);
+      border-radius: 6px;
+      color: #bc462b;
+      background: rgba(233, 130, 99, 0.08);
+      font-size: 12px;
+      font-weight: 600;
+      transition: all 140ms ease;
+    }
+
+    .clear-button:hover {
+      background: #fce8e3;
+      color: #a53d2e;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      border-bottom: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.5);
+    }
+
+    .stat {
+      padding: 14px 18px;
+    }
+
+    .stat + .stat { border-left: 1px solid var(--line); }
+
+    .stat-label {
+      display: block;
+      margin-bottom: 4px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .stat strong {
+      font-family: "Space Grotesk", sans-serif;
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--ink);
+    }
+
+    .filter-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 12px 20px;
+      background: #f4f8f4;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .filter-tabs {
+      display: flex;
+      gap: 4px;
+      background: #e2ebe4;
+      padding: 3px;
+      border-radius: 8px;
+    }
+
+    .filter-tab {
+      padding: 5px 12px;
+      border: 0;
+      border-radius: 6px;
+      background: transparent;
+      color: #55665f;
+      font-size: 11px;
+      font-weight: 700;
+      transition: all 120ms ease;
+    }
+
+    .filter-tab.active {
+      background: #ffffff;
+      color: var(--forest-dark);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+    }
+
+    .search-box {
+      position: relative;
+      width: 150px;
+    }
+
+    .search-box input {
+      height: 30px;
+      padding: 0 10px 0 26px;
+      font-size: 11px;
+      border-radius: 6px;
+      border-color: #d1ddd5;
+    }
+
+    .search-box::before {
+      content: "🔍";
+      position: absolute;
+      left: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 10px;
+      opacity: 0.5;
+    }
+
+    .payments {
+      min-height: 250px;
+      max-height: 520px;
+      overflow-y: auto;
+    }
+
+    .empty-state {
+      display: grid;
+      min-height: 250px;
+      align-content: center;
+      justify-items: center;
+      padding: 32px 24px;
+      text-align: center;
+    }
+
+    .empty-icon {
+      display: grid;
+      width: 48px;
+      height: 48px;
+      place-items: center;
+      margin-bottom: 12px;
+      border-radius: 50%;
+      color: var(--forest);
+      background: var(--soft-green);
+      font-size: 22px;
+    }
+
+    .empty-state strong {
+      margin-bottom: 6px;
+      font-family: "Space Grotesk", sans-serif;
+      font-size: 16px;
+    }
+
+    .empty-state p {
+      max-width: 250px;
+      margin-bottom: 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .payment-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 24px;
+      border-bottom: 1px solid #e8eee9;
+      background: #ffffff;
+      transition: background 120ms ease;
+      animation: arrive 250ms ease both;
+    }
+
+    .payment-row:hover {
+      background: #f7fbf8;
+    }
+
+    .payment-main { min-width: 0; }
+
+    .payment-person {
+      overflow: hidden;
+      margin-bottom: 4px;
+      font-size: 14px;
+      font-weight: 700;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      color: var(--ink);
+    }
+
+    .payment-meta {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px 10px;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .method-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      background: #eef4f0;
+      color: #375246;
+      font-weight: 600;
+      font-size: 10px;
+    }
+
+    .payment-side {
+      display: grid;
+      justify-items: end;
+      gap: 6px;
+    }
+
+    .payment-amount {
+      font-family: "Space Grotesk", sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      white-space: nowrap;
+      color: var(--forest-dark);
+    }
+
+    .confirm-button {
+      min-height: 30px;
+      padding: 0 12px;
+      border: 1px solid #b9d2bf;
+      border-radius: 6px;
+      color: #1e593d;
+      background: #edf7eb;
+      font-size: 11px;
+      font-weight: 700;
+      transition: all 120ms ease;
+    }
+
+    .confirm-button:hover {
+      background: #dcf2d9;
+      border-color: #a1c8a9;
+      transform: translateY(-1px);
+    }
+
+    .received-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 8px;
+      border-radius: 12px;
+      background: #e8f5e9;
+      color: #2e7d32;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .received-label::before {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #4caf50;
+      content: "";
+    }
+
+    .footnote {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      margin: 16px 24px 20px;
+      color: #75817b;
+      font-size: 11px;
+      line-height: 1.45;
+    }
+
+    .footnote span { color: #5d7b6c; font-weight: bold; }
+
+    .toast {
+      position: fixed;
+      right: 24px;
+      bottom: 24px;
+      z-index: 100;
+      max-width: calc(100vw - 48px);
+      padding: 14px 20px;
+      border-radius: 8px;
+      color: #ffffff;
+      background: var(--forest-dark);
+      box-shadow: var(--shadow-lg);
+      font-size: 13px;
+      font-weight: 500;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(12px);
+      transition: opacity 200ms ease, transform 200ms ease;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .toast.visible {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    /* Custom Modal styles (replacing alert/confirm) */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      background: rgba(18, 42, 37, 0.45);
+      backdrop-filter: blur(4px);
+      display: grid;
+      place-items: center;
+      padding: 20px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 200ms ease;
+    }
+
+    .modal-backdrop.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-card {
+      width: min(400px, 100%);
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: var(--shadow-lg);
+      transform: scale(0.95);
+      transition: transform 200ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .modal-backdrop.open .modal-card {
+      transform: scale(1);
+    }
+
+    .modal-title {
+      margin-bottom: 8px;
+      font-family: "Space Grotesk", sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    .modal-body {
+      margin-bottom: 20px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    .btn-secondary {
+      padding: 8px 16px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: #ffffff;
+      color: var(--ink);
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .btn-secondary:hover { background: #f0f4f1; }
+
+    .btn-danger {
+      padding: 8px 16px;
+      border: 0;
+      border-radius: 6px;
+      background: #d32f2f;
+      color: #ffffff;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .btn-danger:hover { background: #b71c1c; }
+
+    @keyframes arrive {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 768px) {
+      .shell { width: min(560px, calc(100% - 32px)); padding-top: 20px; }
+      .topbar { padding-bottom: 24px; }
+      .intro { display: block; margin-bottom: 20px; }
+      .intro-copy { font-size: 13px; margin-top: 6px; }
+      .workspace { grid-template-columns: 1fr; gap: 16px; }
+      .panel-head { padding: 18px 20px 15px; }
+      .form-body { padding: 18px 20px; }
+      .stat { padding: 12px 14px; }
+      .filter-bar { flex-direction: column; align-items: stretch; gap: 8px; }
+      .search-box { width: 100%; }
+      .payment-row { padding: 14px 20px; }
+      .footnote { margin: 14px 20px; }
+    }
+
+    @media (max-width: 420px) {
+      .topbar { flex-direction: column; align-items: flex-start; gap: 12px; }
+      .amount-row { grid-template-columns: minmax(0, 1fr) 95px; }
+      .payment-row { grid-template-columns: minmax(0, 1fr) auto; gap: 8px; }
+      .payment-amount { font-size: 14px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true">↗</span>
+        <span>Cuenta Clara</span>
+      </div>
+      <div class="top-actions">
+        <div class="local-note">Almacenamiento Local Activo</div>
+      </div>
+    </header>
+
+    <section class="intro" aria-labelledby="page-title">
+      <div>
+        <p class="eyebrow">Tu control de cobros</p>
+        <h1 id="page-title">Control de pagos</h1>
+        <p class="intro-copy">Registra avisos de cobro de forma rápida. Revisa tus movimientos y confirma cada pago cuando tengas los fondos.</p>
+      </div>
+    </section>
+
+    <div class="workspace">
+      <!-- Seller / Payment Creator Section -->
+      <section class="panel" aria-labelledby="seller-title">
+        <div class="panel-head">
+          <div>
+            <p class="panel-kicker">Vendedor / Emisor</p>
+            <h2 id="seller-title">Enviar un pago</h2>
+          </div>
+          <span class="step" aria-hidden="true">01</span>
+        </div>
+
+        <form class="form-body" id="payment-form">
+          <div class="field">
+            <label for="amount">Monto del pago</label>
+            <div class="amount-row">
+              <input id="amount" name="amount" type="number" min="0.01" step="0.01" placeholder="0.00" inputmode="decimal" required>
+              <select id="currency" name="currency" aria-label="Moneda" required>
+                <option value="MXN" selected>MXN</option>
+                <option value="USD">USD</option>
+                <option value="COP">COP</option>
+                <option value="EUR">EUR</option>
+                <option value="ARS">ARS</option>
+                <option value="CLP">CLP</option>
+                <option value="PEN">PEN</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="method">Forma de pago</label>
+            <select id="method" name="method" required>
+              <option value="" disabled selected>Selecciona una opción</option>
+              <option value="Transferencia">Transferencia bancaria</option>
+              <option value="Efectivo">Efectivo</option>
+              <option value="Tarjeta">Tarjeta de Crédito/Débito</option>
+              <option value="Pago Móvil">Pago Móvil / Zelle</option>
+              <option value="Otro">Otro medio</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="sender">Nombre o referencia del emisor <span style="font-weight: 400; color: #829087">(opcional)</span></label>
+            <input id="sender" name="sender" type="text" maxlength="60" placeholder="Ej: Juan Pérez / Cliente A">
+          </div>
+
+          <button class="submit-button" type="submit">
+            <span>Enviar aviso de pago</span>
+            <span class="arrow" aria-hidden="true">→</span>
+          </button>
+        </form>
+      </section>
+
+      <!-- Receiver / History Section -->
+      <section class="panel receiver-panel" aria-labelledby="receiver-title">
+        <div class="panel-head">
+          <div>
+            <p class="panel-kicker">Tu bandeja de entrada</p>
+            <h2 id="receiver-title">Pagos recibidos</h2>
+          </div>
+          <div class="head-actions">
+            <button class="action-icon-btn" id="copy-summary-btn" type="button" title="Copiar resumen al portapapeles">📋 Resumen</button>
+            <button class="clear-button" id="clear-history" type="button" hidden>Limpiar todo</button>
+          </div>
+        </div>
+
+        <!-- Dynamic Statistics -->
+        <div class="stats" aria-label="Resumen de pagos">
+          <div class="stat">
+            <span class="stat-label">Pendientes</span>
+            <strong id="pending-count">0</strong>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confirmados</span>
+            <strong id="received-count">0</strong>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Total Avisos</span>
+            <strong id="total-count">0</strong>
+          </div>
+        </div>
+
+        <!-- Filter & Search Controls -->
+        <div class="filter-bar">
+          <div class="filter-tabs" role="tablist">
+            <button class="filter-tab active" data-filter="all" type="button">Todos</button>
+            <button class="filter-tab" data-filter="pending" type="button">Pendientes</button>
+            <button class="filter-tab" data-filter="received" type="button">Recibidos</button>
+          </div>
+          <div class="search-box">
+            <input type="text" id="search-input" placeholder="Buscar..." aria-label="Buscar pago">
+          </div>
+        </div>
+
+        <!-- Payment Records Container -->
+        <div class="payments" id="payments" aria-live="polite">
+          <div class="empty-state">
+            <span class="empty-icon" aria-hidden="true">＋</span>
+            <strong>Aún no hay pagos</strong>
+            <p>Cuando agregues un aviso de pago, aparecerá aquí para que lo confirmes.</p>
+          </div>
+        </div>
+
+        <p class="footnote">
+          <span aria-hidden="true">ⓘ</span>
+          <span>Cuenta Clara organiza tus recibos localmente en el navegador. No procesa transacciones financieras reales.</span>
+        </p>
+      </section>
+    </div>
+
+    <!-- Custom Confirmation Modal (No window.confirm) -->
+    <div class="modal-backdrop" id="confirm-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <div class="modal-card">
+        <h3 class="modal-title" id="modal-title">¿Borrar historial?</h3>
+        <p class="modal-body" id="modal-body">Se eliminarán permanentemente todos los registros de pago almacenados en este dispositivo.</p>
+        <div class="modal-actions">
+          <button class="btn-secondary" id="modal-cancel-btn" type="button">Cancelar</button>
+          <button class="btn-danger" id="modal-confirm-btn" type="button">Borrar todo</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Interactive Toast Notification -->
+    <div class="toast" id="toast" role="status" aria-live="polite">
+      <span id="toast-icon">✓</span>
+      <span id="toast-message">Mensaje de notificación</span>
+    </div>
+  </main>
+
+  <script>
+    const STORAGE_KEY = "cuenta-clara-pagos-v2";
+    
+    // DOM Elements
+    const form = document.querySelector("#payment-form");
+    const paymentsElement = document.querySelector("#payments");
+    const pendingCount = document.querySelector("#pending-count");
+    const receivedCount = document.querySelector("#received-count");
+    const totalCount = document.querySelector("#total-count");
+    const clearButton = document.querySelector("#clear-history");
+    const copySummaryBtn = document.querySelector("#copy-summary-btn");
+    const searchInput = document.querySelector("#search-input");
+    const filterTabs = document.querySelectorAll(".filter-tab");
+    
+    // Toast & Modal
+    const toast = document.querySelector("#toast");
+    const toastMessage = document.querySelector("#toast-message");
+    const confirmModal = document.querySelector("#confirm-modal");
+    const modalCancelBtn = document.querySelector("#modal-cancel-btn");
+    const modalConfirmBtn = document.querySelector("#modal-confirm-btn");
+
+    // Application State
+    let payments = loadPayments();
+    let currentFilter = "all";
+    let searchQuery = "";
+    let toastTimer = null;
+
+    function loadPayments() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+        return Array.isArray(saved) ? saved : [];
+      } catch {
+        return [];
+      }
+    }
+
+    function savePayments() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(payments));
+      } catch (err) {
+        console.error("Storage save failed:", err);
+      }
+    }
+
+    function escapeHtml(value) {
+      return String(value).replace(/[&<>"']/g, char => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        "\"": "&quot;",
+        "'": "&#39;"
+      })[char]);
+    }
+
+    function formatAmount(amount, currency = "MXN") {
+      try {
+        return new Intl.NumberFormat("es", {
+          style: "currency",
+          currency: currency,
+          maximumFractionDigits: 2
+        }).format(amount);
+      } catch {
+        return `${currency} ${Number(amount).toFixed(2)}`;
+      }
+    }
+
+    function formatDate(value) {
+      if (!value) return "";
+      try {
+        return new Intl.DateTimeFormat("es", {
+          dateStyle: "short",
+          timeStyle: "short"
+        }).format(new Date(value));
+      } catch {
+        return value;
+      }
+    }
+
+    function renderPayments() {
+      const pending = payments.filter(p => !p.received).length;
+      const received = payments.filter(p => p.received).length;
+      
+      pendingCount.textContent = pending;
+      receivedCount.textContent = received;
+      totalCount.textContent = payments.length;
+      
+      clearButton.hidden = payments.length === 0;
+
+      // Filter logic
+      let filtered = payments.filter(p => {
+        if (currentFilter === "pending") return !p.received;
+        if (currentFilter === "received") return p.received;
+        return true;
+      });
+
+      // Search query logic
+      if (searchQuery.trim()) {
+        const query = searchQuery.toLowerCase();
+        filtered = filtered.filter(p => 
+          (p.sender && p.sender.toLowerCase().includes(query)) ||
+          (p.method && p.method.toLowerCase().includes(query)) ||
+          (p.amount && p.amount.toString().includes(query)) ||
+          (p.currency && p.currency.toLowerCase().includes(query))
+        );
+      }
+
+      if (filtered.length === 0) {
+        if (payments.length === 0) {
+          paymentsElement.innerHTML = `
+            <div class="empty-state">
+              <span class="empty-icon" aria-hidden="true">＋</span>
+              <strong>Aún no hay pagos registrados</strong>
+              <p>Llena el formulario para generar tu primer aviso de cobro.</p>
+            </div>`;
+        } else {
+          paymentsElement.innerHTML = `
+            <div class="empty-state">
+              <span class="empty-icon" aria-hidden="true">🔍</span>
+              <strong>Sin resultados</strong>
+              <p>No hay avisos que coincidan con la búsqueda o filtro activo.</p>
+            </div>`;
+        }
+        return;
+      }
+
+      paymentsElement.innerHTML = filtered.map(payment => `
+        <article class="payment-row">
+          <div class="payment-main">
+            <p class="payment-person">${escapeHtml(payment.sender || "Sin nombre de emisor")}</p>
+            <div class="payment-meta">
+              <span class="method-badge">${escapeHtml(payment.method || "General")}</span>
+              <time datetime="${escapeHtml(payment.createdAt)}">${escapeHtml(formatDate(payment.createdAt))}</time>
+            </div>
+          </div>
+          <div class="payment-side">
+            <strong class="payment-amount">${escapeHtml(formatAmount(payment.amount, payment.currency))}</strong>
+            ${payment.received
+              ? '<span class="received-label">Recibido</span>'
+              : `<button class="confirm-button" type="button" data-confirm="${escapeHtml(payment.id)}">Confirmar pago</button>`}
+          </div>
+        </article>
+      `).join("");
+    }
+
+    form.addEventListener("submit", event => {
+      event.preventDefault();
+      
+      const formData = new FormData(form);
+      const amount = Number(formData.get("amount"));
+      const currency = formData.get("currency") || "MXN";
+      const method = formData.get("method");
+      const sender = String(formData.get("sender") || "").trim();
+
+      if (!Number.isFinite(amount) || amount <= 0) {
+        showToast("Por favor ingresa un monto válido mayor a 0.");
+        return;
+      }
+
+      if (!method) {
+        showToast("Selecciona una forma de pago.");
+        return;
+      }
+
+      const newPayment = {
+        id: globalThis.crypto?.randomUUID?.() || `pay-${Date.now()}-${Math.random().toString(16).slice(2)}`,
+        amount,
+        currency,
+        method,
+        sender,
+        createdAt: new Date().toISOString(),
+        received: false
+      };
+
+      payments.unshift(newPayment);
+      savePayments();
+      renderPayments();
+      
+      form.reset();
+      document.querySelector("#amount").focus();
+      showToast("Aviso de pago registrado con éxito.");
+    });
+
+    // Confirm payment reception event
+    paymentsElement.addEventListener("click", event => {
+      const button = event.target.closest("[data-confirm]");
+      if (!button) return;
+
+      const paymentId = button.dataset.confirm;
+      const payment = payments.find(p => p.id === paymentId);
+      
+      if (!payment || payment.received) return;
+      
+      payment.received = true;
+      payment.confirmedAt = new Date().toISOString();
+      
+      savePayments();
+      renderPayments();
+      showToast("Pago marcado como recibido.");
+    });
+
+    // Custom Modal logic replacing window.confirm
+    clearButton.addEventListener("click", () => {
+      confirmModal.classList.add("open");
+    });
+
+    modalCancelBtn.addEventListener("click", () => {
+      confirmModal.classList.remove("open");
+    });
+
+    confirmModal.addEventListener("click", (e) => {
+      if (e.target === confirmModal) {
+        confirmModal.classList.remove("open");
+      }
+    });
+
+    modalConfirmBtn.addEventListener("click", () => {
+      payments = [];
+      savePayments();
+      renderPayments();
+      confirmModal.classList.remove("open");
+      showToast("Historial de pagos eliminado.");
+    });
+
+    // Copy Summary function using execCommand fallback
+    copySummaryBtn.addEventListener("click", () => {
+      if (payments.length === 0) {
+        showToast("No hay datos para exportar.");
+        return;
+      }
+
+      const pending = payments.filter(p => !p.received).length;
+      const received = payments.filter(p => p.received).length;
+      
+      let summaryText = `*Cuenta Clara - Resumen de Pagos*\n`;
+      summaryText += `----------------------------\n`;
+      summaryText += `Pendientes: ${pending} | Confirmados: ${received} | Total: ${payments.length}\n\n`;
+      
+      payments.slice(0, 10).forEach(p => {
+        const status = p.received ? "✓ Recibido" : "⏳ Pendiente";
+        const sender = p.sender || "Emisor";
+        summaryText += `• ${sender}: ${formatAmount(p.amount, p.currency)} (${p.method}) - ${status}\n`;
+      });
+
+      // Executive clipboard copy safe inside iframe environment
+      const textarea = document.createElement("textarea");
+      textarea.value = summaryText;
+      textarea.style.position = "fixed";
+      textarea.style.opacity = "0";
+      document.body.appendChild(textarea);
+      textarea.select();
+      
+      try {
+        document.execCommand("copy");
+        showToast("Resumen copiado al portapapeles.");
+      } catch {
+        showToast("No se pudo copiar el resumen.");
+      } finally {
+        document.body.removeChild(textarea);
+      }
+    });
+
+    // Filter Tab Switching
+    filterTabs.forEach(tab => {
+      tab.addEventListener("click", () => {
+        filterTabs.forEach(t => t.classList.remove("active"));
+        tab.classList.add("active");
+        currentFilter = tab.dataset.filter;
+        renderPayments();
+      });
+    });
+
+    // Live Search Input
+    searchInput.addEventListener("input", (e) => {
+      searchQuery = e.target.value;
+      renderPayments();
+    });
+
+    // Toast function
+    function showToast(msg) {
+      toastMessage.textContent = msg;
+      toast.classList.add("visible");
+      window.clearTimeout(toastTimer);
+      toastTimer = window.setTimeout(() => {
+        toast.classList.remove("visible");
+      }, 2800);
+    }
+
+    // Storage Sync across tabs
+    window.addEventListener("storage", event => {
+      if (event.key === STORAGE_KEY) {
+        payments = loadPayments();
+        renderPayments();
+      }
+    });
+
+    // Initial Render
+    renderPayments();
+  </script>
+</body>
+</html>
